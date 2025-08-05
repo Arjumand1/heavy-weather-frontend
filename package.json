@@ -1,8 +1,8 @@
 {
-  "name": "rococo-sample-vue3",
+  "name": "heavy-weather-vue3",
   "version": "0.0.1",
-  "description": "A sample frontend application for a Rococo based backend",
-  "productName": "Rococo Sample App",
+  "description": "Heavy Weather - A TodoMVC application with user authentication",
+  "productName": "Heavy Weather",
   "author": "asymness <asym1999@gmail.com>",
   "type": "module",
   "private": true,

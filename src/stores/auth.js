@@ -132,7 +132,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         return await handleAuthRequest(
           this,
-          () => axios.post(`/auth/reset_password/${token}/${uidb64}`, payload),
+          () => axios.post(`/auth/reset-password/${token}/${uidb64}`, payload),
           this.router,
         )
       } catch (error) {
@@ -145,7 +145,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async requestPasswordReset(email) {
       try {
-        const response = await axios.post('/auth/request_password_reset', { email })
+        const response = await axios.post('/auth/forgot-password', { email })
 
         if (response.data?.success) {
           Notify.create({
@@ -235,11 +235,38 @@ export const useAuthStore = defineStore('auth', {
     },
 
     /**
-     * Update user profile data
+     * Update user profile data locally
      */
     updateUser(userData) {
       this.user = { ...this.user, ...userData }
       localStorageService.setItem(STORAGE_KEYS.USER, this.user)
+    },
+
+    /**
+     * Update user profile on server and locally
+     */
+    async updateProfile(profileData) {
+      try {
+        const response = await axios.put('/person/me', profileData)
+
+        if (response.data?.success) {
+          // Update the user in local state and localStorage
+          this.updateUser(response.data.person)
+
+          Notify.create({
+            message: 'Profile updated successfully',
+            color: 'positive',
+            position: 'top',
+          })
+
+          return true
+        } else {
+          this.showErrorNotification(response.data?.message || 'Failed to update profile')
+          return false
+        }
+      } catch (error) {
+        return this.handleApiError(error, 'Failed to update profile')
+      }
     },
 
     /**
